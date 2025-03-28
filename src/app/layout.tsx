@@ -28,12 +28,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased typography`}>
-        <AuthProvider>  
-          <Navbar />
-          {children}
-          {auth}
-        </AuthProvider>
+      <body className={`relative ${geistSans.variable} ${geistMono.variable} antialiased typography min-h-screen flex flex-col`}>
+          <AuthProvider>  
+            <main className="flex-grow pb-14">
+              <Navbar />
+              {children}
+              {auth}
+            </main>
+          </AuthProvider>
+        <footer className="absolute bottom-0 w-full bg-gray-800 text-white text-center py-4">
+          <p className="text-sm">
+          &copy; {new Date().getFullYear()} TCID Online Schedule. Developed by V. Michael Lambson. Licensed under the BSD-3-Clause License. All rights reserved.
+          </p>
+        </footer>
       </body>
     </html>
   );

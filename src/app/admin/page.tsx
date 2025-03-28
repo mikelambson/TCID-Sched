@@ -5,7 +5,7 @@ import Link from "next/link";
 const AdminPage = () => {
     const router = useRouter();
     return (
-        <div className="flex flex-col h-screen bg-gray-100">
+        <div className="flex flex-col">
         {/* <nav className="admin-navbar">
                 <ul className="static top-0 left-0 pl-10 flex gap-4 z-50">
                     <li><Link href="/admin/dashboard">Dashboard</Link></li>

@@ -33,7 +33,7 @@ export default function Home() {
             height={40}
             className=""
         />
-        <h1 className="text-center text-3xl">TCID Online Schedule</h1>
+        <h1 className="text-center text-3xl font-bold text-gray-800">TCID Online Schedule</h1>
       </span>
       <div className="m-4">       
         <div className="grid justify-center">

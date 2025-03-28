@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedIn, setLoggedIn] = useState(false);
   return (
     <AuthContext.Provider value={{ isLoggedIn, setLoggedIn }}>
-        <div className="fixed top-3 right-3 text-yellow-500 font-semibold text-xl ">
+        <div className="fixed top-3 right-3 text-yellow-500 font-semibold text-xl z-50">
             {isLoggedIn === true ? "Logged In" : ""}
         </div>
         

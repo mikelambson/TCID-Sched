@@ -61,7 +61,7 @@ export function OrderTable(location: OrderTableProps) {
   })
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border border-gray-500/10 shadow-md">
       <p>{location?.location}</p>
       <Table>
         <TableHeader>

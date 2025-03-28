@@ -3,11 +3,11 @@ import AdminNav from "@/features/nav/adminNav";
 
 const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return (
-        <div>
+        <div className="pt-14">
             <AdminNav />
-           {children}
-            
-            
+            <div className="">
+                {children}
+            </div>
         </div>
     );
 };

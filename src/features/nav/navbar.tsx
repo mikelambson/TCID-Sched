@@ -24,7 +24,7 @@ import { usePathname } from "next/navigation";
     const iconColor = pathname.startsWith("/admin") ? "text-white" : "text-foreground";
     return ( 
         <Drawer direction="left">
-            <DrawerTrigger className={`fixed top-1 left-1 p-2 z-10 hover:bg-slate-600/50 cursor-pointer rounded-md ${iconColor}`}>
+            <DrawerTrigger className={`fixed top-1 left-1 p-2 z-10 border-b border-r border-black/40 bg-slate-600/30 hover:bg-slate-400/50 hover:border-yellow-600/30 cursor-pointer rounded-md drop-shadow-lg ${iconColor}`}>
                     <GiHamburgerMenu size={30} />
                     <span className="sr-only">Open navigation</span>
             </DrawerTrigger>
