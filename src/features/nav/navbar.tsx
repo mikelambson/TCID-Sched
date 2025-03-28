@@ -5,6 +5,7 @@ import {
     Drawer,
     DrawerClose,
     DrawerContent,
+    DrawerDescription,
     DrawerFooter,
     DrawerHeader,
     DrawerTitle,
@@ -31,6 +32,9 @@ import { usePathname } from "next/navigation";
             <DrawerContent>
                 <DrawerHeader>
                     <DrawerTitle className="sr-only">Main Menu</DrawerTitle>
+                    <DrawerDescription className="sr-only">
+                        TCID Online Schedule choose a district
+                    </DrawerDescription>
                 </DrawerHeader>
                 <nav className="-mt-8 flex flex-col text-accent-foreground font-semibold text-xl">
                     {

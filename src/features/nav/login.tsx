@@ -51,7 +51,7 @@ const Login = () => {
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
         const username = formData.get("username");
-        const password = formData.get("password");
+        const password = formData.get("current-password");
         if (username === fakeUsername && password === fakePassword) {
             setLoggedIn(true);
             setOpen(false);
@@ -76,11 +76,11 @@ const Login = () => {
             >
                 <Label>
                 Username
-                <Input type="text" name="username" />
+                <Input type="text" name="username" autoComplete="username" />
                 </Label>
                 <Label>
                 Password
-                <Input type="password" name="password" />
+                <Input type="password" name="current-password" autoComplete="current-password" />
                 </Label>
                 
                 <Button type="submit" className="cursor-pointer">Login</Button>

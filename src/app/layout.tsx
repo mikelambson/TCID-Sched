@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/features/nav/navbar"
 import { AuthProvider } from "@/lib/auth-context";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,15 +31,19 @@ export default function RootLayout({
     <html lang="en">
       <body className={`relative ${geistSans.variable} ${geistMono.variable} antialiased typography min-h-screen flex flex-col`}>
           <AuthProvider>  
-            <main className="flex-grow pb-14">
+            <main className="flex-grow pb-20 sm:pb-14" aria-hidden="true" data-aria-hidden="true">
               <Navbar />
               {children}
               {auth}
             </main>
           </AuthProvider>
         <footer className="absolute bottom-0 w-full bg-gray-800 text-white text-center py-4">
-          <p className="text-sm">
-          &copy; {new Date().getFullYear()} TCID Online Schedule. Developed by V. Michael Lambson. Licensed under the BSD-3-Clause License. All rights reserved.
+          <p className="text-sm hover:underline">
+            <Link legacyBehavior href="https://github.com/mikelambson/TCID-Sched/blob/main/LICENSE" passHref >
+              <a target="_blank" rel="noopener noreferrer">
+                &copy; {new Date().getFullYear()} TCID Online Schedule. Developed by V. Michael Lambson. Licensed under the BSD-3-Clause License. All rights reserved.
+              </a>
+            </Link>
           </p>
         </footer>
       </body>

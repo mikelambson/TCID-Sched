@@ -31,9 +31,10 @@ export default function Home() {
             alt="Logo"
             width={40}
             height={40}
-            className=""
+            className="hidden sm:block"
+            priority
         />
-        <h1 className="text-center text-3xl font-bold text-gray-800">TCID Online Schedule</h1>
+        <h1 className="text-center sm:text-3xl font-bold text-gray-800">TCID Online Schedule</h1>
       </span>
       <div className="m-4">       
         <div className="grid justify-center">
