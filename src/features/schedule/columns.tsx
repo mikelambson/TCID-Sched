@@ -1,38 +1,27 @@
 "use client"
-
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
- 
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { ScheduleItem } from "@/features/schedule/types"
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Payment = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
-}
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<ScheduleItem>[] = [
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "orderNumber",
+    header: "Order #",
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "date",
+    header: "Date",
+    cell: ({ row }) => new Date(row.getValue("date")).toLocaleDateString(),
   },
   {
-    accessorKey: "amount",
-    header: "Amount",
+    accessorKey: "time",
+    header: "Time",
+  },
+  {
+    accessorKey: "canal",
+    header: "Canal",
+  },
+  {
+    accessorKey: "customer",
+    header: "Customer",
   },
 ]

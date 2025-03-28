@@ -31,11 +31,10 @@ const Schedule = (props: ScheduleProps) => {
     }
 
     return ( 
-        <div>
+        <div className="my-4 grid gap-4 ">
             <h1>{props.location}</h1>
             <OrderTable 
-                columns={schedule.columns} 
-                data={schedule.data} 
+                location={props.location}
             />
         </div>
      );
