@@ -76,11 +76,21 @@ const Login = () => {
             >
                 <Label>
                 Username
-                <Input type="text" name="username" autoComplete="username" />
+                <Input 
+                    type="text" 
+                    name="username" 
+                    autoComplete="username" 
+                    required    
+                />
                 </Label>
                 <Label>
                 Password
-                <Input type="password" name="current-password" autoComplete="current-password" />
+                <Input 
+                    type="password" 
+                    name="current-password" 
+                    autoComplete="current-password" 
+                    required    
+                />
                 </Label>
                 
                 <Button type="submit" className="cursor-pointer">Login</Button>
