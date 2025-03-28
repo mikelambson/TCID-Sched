@@ -81,7 +81,7 @@ Project maintained by [@mikelambson](https://github.com/mikelambson) with requir
 ---
 
 ## ⚙️ Roadmap (Planned Features)
-- [O] Admin login with role-based access
+- [ ] Admin login with role-based access
 - [X] Mobile optimization for ditchriders and stakeholders
 - [ ] Historical schedule views
 - [ ] Notification system for schedule updates
