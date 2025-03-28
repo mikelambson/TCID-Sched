@@ -16,6 +16,7 @@ A public-facing application that provides TCID (Truckee-Carson Irrigation Distri
 
 ## 🤖 Tech Stack
 
+- **Runtime:** [Nodejs](https://nodejs.org/)^22.14
 - **Frontend:** [Next.js](https://nextjs.org/) (App Router)
 - **Database:** [Prisma ORM](https://www.prisma.io/) with support for SQLite & MySQL
 - **Styling/UI:** [ShadCN UI](https://ui.shadcn.com/) + Tailwind CSS
@@ -32,7 +33,7 @@ cd TCID-Sched
 
 ### 2. Install dependencies
 ```bash
-pnpm install   # or npm install / yarn install
+npm install   # or npm install / yarn install
 ```
 
 ### 3. Set up environment variables
@@ -70,18 +71,18 @@ Then visit: [http://localhost:3000](http://localhost:3000)
 ---
 
 ## 📖 License
-MIT
+BSD 3-Clause License
 
 ---
 
 ## 📙 Acknowledgments
-Project maintained by [@mikelambson](https://github.com/mikelambson) with contributions from the TCID IT & Operations teams.
+Project maintained by [@mikelambson](https://github.com/mikelambson) with requirement contributions from the TCID Operations team.
 
 ---
 
 ## ⚙️ Roadmap (Planned Features)
-- [ ] Admin login with role-based access
-- [ ] Mobile optimization for ditchriders and stakeholders
+- [O] Admin login with role-based access
+- [X] Mobile optimization for ditchriders and stakeholders
 - [ ] Historical schedule views
 - [ ] Notification system for schedule updates
 - [ ] Offline-capable schedule caching
