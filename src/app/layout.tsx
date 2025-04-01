@@ -33,7 +33,7 @@ export default function RootLayout({
       <body className={`relative ${geistSans.variable} ${geistMono.variable} antialiased typography min-h-screen flex flex-col`}>
           <AuthProvider>
             <QueryProvider>
-              <main className="flex-grow pb-20 sm:pb-14" aria-hidden="true" data-aria-hidden="true">
+              <main className="flex-grow pb-20 sm:pb-14">
                 <Navbar />
                 {children}
                 {auth}

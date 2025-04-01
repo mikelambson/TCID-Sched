@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import UploadSchedule from "@/features/schedule/uploadSchedule";
 
 const AdminPage = () => {
     const router = useRouter();
@@ -16,6 +17,7 @@ const AdminPage = () => {
         <div style={{ padding: '20px' }}>
             <h1>Admin Dashboard</h1>
             <p>Welcome to the admin panel. Use the navigation to manage the application.</p>
+            <UploadSchedule />
         </div>
         
         </div>
