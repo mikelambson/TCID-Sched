@@ -6,7 +6,12 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 
-type UserType = { id: string; name?: string | null; email: string };
+type UserType = { 
+  id: string; 
+  name?: string | null; 
+  email: string 
+  isAdmin: boolean
+};
 
 type AuthContextType = {
   isLoggedIn: boolean;
