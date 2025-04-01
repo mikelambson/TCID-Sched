@@ -17,6 +17,12 @@
 /.next/
 /out/
 
+# Ignore SQLite and Prism database files
+*.db
+*.db-wal
+*.db-shm
+/prisma/database/
+
 # production
 /build
 
