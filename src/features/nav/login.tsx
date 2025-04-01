@@ -12,17 +12,18 @@ import { Input } from "@/components/ui/input"
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
+import { loginUser } from "@/services/loginService";
 
 
 const Login = () => {
-    const { isLoggedIn, setLoggedIn } = useAuth(); // Simulate a logged-in state
+    const { isLoggedIn, recheckSession } = useAuth(); // ✅ replace setLoggedIn with recheckSession
+ // Simulate a logged-in state
     const [open, setOpen] = useState(true);
     const router = useRouter();
     const pathname = usePathname();
 
     useEffect(() => {
         const login = async () => {
-            
             
             if (pathname === "/login" && isLoggedIn === false) {
                 setOpen(true);  
@@ -44,20 +45,24 @@ const Login = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 🔐 Placeholder login logic
-        const fakeUsername = "admin";
-        const fakePassword = "admin";
-
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
-        const username = formData.get("username");
-        const password = formData.get("current-password");
-        if (username === fakeUsername && password === fakePassword) {
-            setLoggedIn(true);
+        const username = formData.get("username") as string | null;
+        const password = formData.get("current-password") as string | null;
+
+        if (!username || !password) {
+            alert("Username and password are required.");
+            return;
+        }
+
+        const response = await loginUser({ username, password });
+
+        if (response.success) {
+            await recheckSession();
             setOpen(false);
             router.push("/admin");
-          } else {
-            alert(`Invalid login credentials.\nUsername: ${username}\nPassword: ${password}`);
+        } else {
+            alert(response.error || "Login failed");
         }
       };
 
