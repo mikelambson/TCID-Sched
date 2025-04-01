@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               Welcome:
             </span>
             <Link href="/admin/profile" className={`hover:underline curser-pointer ${namePathSyle}`}>
-              {user.email}
+              {user.name}
             </Link>
           </>
         ) : ""}
