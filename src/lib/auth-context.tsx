@@ -3,6 +3,7 @@
 
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 
 type UserType = { id: string; name?: string | null; email: string };
@@ -62,14 +63,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, setLoggedIn, user, recheckSession }}>
-      <div className={`fixed top-4 right-4 ${namePathSyle} font-semibold z-50`}>
+      <div className={`fixed top-4 right-4 font-semibold z-50`}>
         {isLoggedIn && user?.email ? (
           <>
             <span className={`hidden sm:inline text-xs mr-2 ${pathSyle}`}>
               Welcome:
             </span>
-
-            {user.name}
+            <Link href="/admin/profile" className={`hover:underline curser-pointer ${namePathSyle}`}>
+              {user.email}
+            </Link>
           </>
         ) : ""}
       </div>
