@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/features/nav/navbar"
 import { AuthProvider } from "@/lib/auth-context";
 import Link from "next/link";
+import { QueryProvider } from "@/lib/query-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,12 +31,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`relative ${geistSans.variable} ${geistMono.variable} antialiased typography min-h-screen flex flex-col`}>
-          <AuthProvider>  
-            <main className="flex-grow pb-20 sm:pb-14" aria-hidden="true" data-aria-hidden="true">
-              <Navbar />
-              {children}
-              {auth}
-            </main>
+          <AuthProvider>
+            <QueryProvider>
+              <main className="flex-grow pb-20 sm:pb-14" aria-hidden="true" data-aria-hidden="true">
+                <Navbar />
+                {children}
+                {auth}
+              </main>
+            </QueryProvider>  
           </AuthProvider>
         <footer className="absolute bottom-0 w-full bg-gray-800 text-white text-center py-4">
           <p className="text-sm hover:underline">

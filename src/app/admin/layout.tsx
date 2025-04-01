@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { QueryProvider } from '@/lib//query-provider';
 import AdminNav from "@/features/nav/adminNav";
 
 const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -49,10 +50,12 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (!validSession) return null;
 
   return (
-    <div className="pt-14">
-      <AdminNav />
-      <div>{children}</div>
-    </div>
+    <QueryProvider>
+      <div className="pt-14">
+        <AdminNav />
+        <div>{children}</div>
+      </div>
+    </QueryProvider>
   );
 };
 

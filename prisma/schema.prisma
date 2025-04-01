@@ -22,17 +22,20 @@ model User {
 }
 
 model Schedule { 
-  id        String   @id @default(cuid())
-  userId    String
-  startTime DateTime
-  endTime   DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt  
+  id          String   @id @default(cuid())
+  startTime   DateTime
+  mainLateral String
+  cfs         DateTime
+  orderNumber Int
+  status      String
+  district    String
+  lineHead    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt  
 }
 
 model Wmessage {
   id        String   @id @default(cuid())
-  userId    String
   message   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
