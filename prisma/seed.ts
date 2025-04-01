@@ -122,15 +122,80 @@ async function resetPasswordByEmail() {
 // Entry point
 async function main() {
   const args = process.argv.slice(2);
+  const cmd = args[0]?.toLowerCase();
 
-  const isReset = args.includes("--reset") || args.includes("reset");
-
-  if (isReset) {
-    await resetPasswordByEmail();
-  } else {
-    await createAdminFlow();
+  switch (cmd) {
+    case "reset":
+    case "--reset":
+      await resetPasswordByEmail();
+      break;
+    case "delete":
+    case "--delete":
+      await deleteUserByEmail();
+      break;
+    case "list":
+    case "--list":
+      await listUsers();
+      break;
+    default:
+      await createAdminFlow();
   }
 }
+
+
+// Delete user by email or username
+async function deleteUserByEmail() {
+  const email = await ask("Enter user email to delete");
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    console.log(`❌ No user found with email: ${email}`);
+    return;
+  }
+
+  console.log(`⚠️  Found user: ${user.name || "Unnamed"} (${email})`);
+  const confirm = await ask("Are you sure you want to delete this user? (y/N)", "N");
+  if (!/^y(es)?$/i.test(confirm)) {
+    console.log("🛑 Cancelled.");
+    return;
+  }
+
+  await prisma.user.delete({ where: { email } });
+  console.log(`✅ User deleted: ${email}`);
+}
+
+// List all users
+async function listUsers() {
+  const users = await prisma.user.findMany({
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      isAdmin: true,
+      createdAt: true,
+    },
+  });
+
+  if (!users.length) {
+    console.log("⚠️ No users found.");
+    return;
+  }
+
+  console.log(`\n📋 Registered Users (${users.length}):`);
+
+  const tableData = users.map((user) => ({
+    ID: user.id,
+    Name: user.name || "(Unnamed)",
+    Email: user.email,
+    Admin: user.isAdmin ? "✅" : "❌",
+    Created: user.createdAt.toISOString().split("T")[0], // just date
+  }));
+
+  console.table(tableData);
+}
+
+
 
 main()
   .catch((e) => {
