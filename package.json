@@ -13,7 +13,8 @@
     "seed": "ts-node ./prisma/seed.ts",
     "reset": "ts-node ./prisma/seed.ts --reset",
     "list": "ts-node ./prisma/seed.ts --list",
-    "delete": "ts-node ./prisma/seed.ts --reset"
+    "delete": "ts-node ./prisma/seed.ts --reset",
+    "generate:staging": "prisma generate --schema=./prisma/schema.prisma --env-file=.env.staging"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.0",
