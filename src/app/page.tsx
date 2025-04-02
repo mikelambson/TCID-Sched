@@ -55,8 +55,8 @@ export default function Home() {
                 <p className="text-sm text-gray-400 text-center">
                   {new Date(msg.createdAt).toLocaleDateString('en-GB')}
                 </p>
-                <h2 className="text-xl font-semibold text-center whitespace-pre-wrap">
-                  {msg.message}
+                <h2 className="text-xl font-semibold whitespace-pre-wrap">
+                  {msg.message.replace(/\\n/g, '\n')}
                 </h2>
                 </CardContent>
               </Card>
