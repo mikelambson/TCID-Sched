@@ -244,7 +244,7 @@ export default function ManageUsers() {
                         )}
                     />
 
-                    {form.watch("password") && (
+                    {form.watch("password") !== "" && (
                     <FormField
                         control={form.control}
                         name="confirmPassword"
