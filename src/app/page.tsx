@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useWmessages } from '@/services/getwmmessage';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 
 type Message = {
   id: string;
@@ -51,10 +51,10 @@ export default function Home() {
               )
               .map((msg: Message) => (
               <Card key={msg.id} className="bg-gray-700/90 text-amber-200">
-                <CardContent className="p-6 space-y-2">
-                <p className="text-sm text-gray-400 text-center">
+                <CardTitle className="text-center text-sm font-bold text-gray-300 -mt-2 -mb-4">
                   {new Date(msg.createdAt).toLocaleDateString('en-GB')}
-                </p>
+                </CardTitle>
+                <CardContent>
                 <h2 className="text-xl font-semibold whitespace-pre-wrap">
                   {msg.message.replace(/\\n/g, '\n')}
                 </h2>
