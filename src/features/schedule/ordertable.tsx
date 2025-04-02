@@ -87,7 +87,7 @@ export function OrderTable({ location, data }: OrderTableProps) {
           className="max-w-48"
           value={filterValue}
           onChange={handleFilterChange}
-          placeholder="Enter order # or canal..."
+          placeholder="Enter order # or lateral..."
         />
       </div>
       <Table>
