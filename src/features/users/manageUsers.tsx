@@ -320,8 +320,8 @@ export default function ManageUsers() {
                             await deleteUser(deleteTargetUser.id);
                             refreshUsers();
                             setDeleteTargetUser(null);
-                            } catch (err: any) {
-                            alert(err.message || "Failed to delete user");
+                            } catch (err: unknown) {
+                                alert(err instanceof Error ? err.message : "Failed to delete user");
                             }
                         }}
                         >

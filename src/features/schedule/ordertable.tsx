@@ -80,8 +80,10 @@ export function OrderTable({ location, data }: OrderTableProps) {
 
   return (
     <div className="rounded-md border border-gray-500/10 shadow-md">
-      <div className="p-2 inline-flex items-center gap-2">
-        Find:
+      <div className="w-full p-2 inline-flex items-center gap-2 flex-nowrap">
+        <p className="font-semibold text-gray-700">
+            Search {location}:
+        </p>
         <Input
           name="filter"
           className="max-w-48"

@@ -68,7 +68,7 @@ export async function GET(request: Request) {
       select: { id: true, name: true, email: true, isAdmin: true }, // Exclude password
     });
     return NextResponse.json(users, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch users' },
       { status: 500 }

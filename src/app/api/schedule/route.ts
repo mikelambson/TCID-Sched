@@ -3,6 +3,12 @@ import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { ScheduleRow } from '@/lib/types'; // Adjust path
 
+type ScheduleWhereClause = {
+  district?: {
+    contains: string;
+  };
+}
+
 // Helper to extract session from cookies
 const getUserFromSession = async (request: Request) => {
   const cookieHeader = request.headers.get('cookie');
@@ -99,7 +105,7 @@ export async function GET(request: Request) {
       const districtFilter = searchParams.get('district'); // e.g., "WEST" (uppercase from frontend)
   
       // Build Prisma query
-      const whereClause: any = {};
+      const whereClause: ScheduleWhereClause = {};
       if (districtFilter) {
         whereClause.district = {
           contains: districtFilter, // Case-sensitive match, expecting uppercase

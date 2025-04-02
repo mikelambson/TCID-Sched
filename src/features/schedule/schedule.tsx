@@ -30,7 +30,7 @@ const Schedule = (props: ScheduleProps) => {
   }, [props.location]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="pt-8 text-center">Loading...</div>;
   }
 
   if (error) {

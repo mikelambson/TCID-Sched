@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAuth } from "@/lib/auth-context";
+// Removed incorrect import of setTimeout
 
 export default function LogoutPage() {
   const router = useRouter();
@@ -18,9 +19,10 @@ export default function LogoutPage() {
 
         // Clear client state
         setLoggedIn(false);
-
+        
         // Redirect to login or home
         router.push('/');
+
       } catch (error) {
         console.error("Logout failed:", error);
       }
@@ -29,5 +31,5 @@ export default function LogoutPage() {
     logout();
   }, [router, setLoggedIn]);
 
-  return <div className='mt-8 text-center'>Logging out...</div>;
+  return;
 }

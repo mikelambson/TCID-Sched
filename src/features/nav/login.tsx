@@ -1,3 +1,4 @@
+// @/features/nav/login.tsx
 "use client";
 import { useState, useEffect } from "react";
 import {
@@ -38,7 +39,7 @@ const Login = () => {
         };
 
         login();    
-    }, [isLoggedIn]);
+    }, [isLoggedIn]); // eslint-disable-line react-hooks/exhaustive-deps
 
     
     

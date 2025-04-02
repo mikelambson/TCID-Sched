@@ -1,7 +1,15 @@
+// @/app/api/users/[id]/route.ts
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import * as argon2 from 'argon2';
 import { requireAdmin } from '@/lib/auth';
+
+type UserUpdateData = {
+  name?: string;
+  email?: string;
+  isAdmin?: boolean;
+  password?: string;
+};
 
 export async function DELETE(request: Request) {
   const adminUser = await requireAdmin(request);
@@ -45,7 +53,7 @@ export async function PATCH(request: Request) {
   try {
     const { name, email, password, isAdmin } = await request.json();
 
-    const updateData: any = {};
+    const updateData: UserUpdateData = {};
 
     if (name !== undefined) updateData.name = name;
     if (email !== undefined) updateData.email = email;

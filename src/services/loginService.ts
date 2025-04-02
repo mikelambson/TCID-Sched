@@ -32,7 +32,7 @@ export const loginUser = async ({ username, password }: LoginCredentials) => {
           success: true,
           user: data.user,
         };
-    } catch (err) {
+    } catch {
         return {
           success: false,
           error: "Unexpected error occurred",
