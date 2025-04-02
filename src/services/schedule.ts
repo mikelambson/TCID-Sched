@@ -8,6 +8,7 @@ export async function submitSchedule(data: ScheduleRow[]): Promise<{ success: bo
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include', 
       body: JSON.stringify(data),
     });
 

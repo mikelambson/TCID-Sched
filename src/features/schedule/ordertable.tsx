@@ -13,6 +13,7 @@ import {
   FilterFn,
 } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FaAngleDoubleDown, FaAngleDoubleUp } from "react-icons/fa";
 import { columns } from "./columns";
 import { ScheduleRow } from "@/lib/types";
 import { Input } from "@/components/ui/input";
@@ -94,22 +95,21 @@ export function OrderTable({ location, data }: OrderTableProps) {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  className="cursor-pointer"
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : typeof header.column.columnDef.header === "function"
-                    ? header.column.columnDef.header(header.getContext())
-                    : header.column.columnDef.header}
-                  {header.column.getIsSorted()
-                    ? header.column.getIsSorted() === "asc"
-                      ? " ^"
-                      : " v"
-                    : ""}
-                </TableHead>
+                 <TableHead
+                 key={header.id}
+                 onClick={header.column.getToggleSortingHandler()}
+                 className="cursor-pointer"
+               >
+                 <div className="flex items-center gap-1">
+                   {header.isPlaceholder
+                     ? null
+                     : typeof header.column.columnDef.header === "function"
+                     ? header.column.columnDef.header(header.getContext())
+                     : header.column.columnDef.header}
+                   {header.column.getIsSorted() === "asc" && <FaAngleDoubleUp />}
+                   {header.column.getIsSorted() === "desc" && <FaAngleDoubleDown />}
+                 </div>
+               </TableHead>
               ))}
             </TableRow>
           ))}
