@@ -1,6 +1,13 @@
+// @/app/api/profile/route.ts
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import * as argon2 from 'argon2';
+
+type UserUpdateData = {
+  name?: string;
+  email?: string;
+  password?: string;
+}
 
 // Helper to extract session from cookies
 const getUserFromSession = async (request: Request) => {
@@ -44,7 +51,7 @@ export async function PATCH(request: Request) {
     try {
       const { name, email, password, currentPassword } = await request.json();
   
-      const updateData: any = {};
+      const updateData: UserUpdateData = {};
       if (name !== undefined) updateData.name = name;
       if (email !== undefined) updateData.email = email;
   

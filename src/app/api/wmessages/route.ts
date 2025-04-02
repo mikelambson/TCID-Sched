@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       data: { message },
     });
     return NextResponse.json(newMsg);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to create message' }, { status: 500 });
   }
 }
