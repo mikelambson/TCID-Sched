@@ -111,7 +111,13 @@ export default function ManageUsers() {
           });          
         } else {
         setEditingUser(null);
-        form.reset({ name: "", email: "", password: "", isAdmin: false });
+        form.reset({
+            name: "",
+            email: "",
+            password: "",
+            confirmPassword: "", // ✅ Add this too
+            isAdmin: false,
+          });
         }
         setOpen(true);
     };
