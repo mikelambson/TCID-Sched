@@ -7,35 +7,88 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getPaginationRowModel,
+  getFilteredRowModel,
   SortingState,
+  ColumnFiltersState,
+  FilterFn,
 } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { columns } from "./columns"; // Import from columns.tsx
+import { columns } from "./columns";
 import { ScheduleRow } from "@/lib/types";
+import { Input } from "@/components/ui/input";
 
 interface OrderTableProps {
   location?: string;
   data: ScheduleRow[];
 }
 
+// Define the custom filter function with proper typing
+const customFilter: FilterFn<ScheduleRow> = (row, columnId, filterValue: string) => {
+  if (!filterValue) return true; // No filter if empty
+
+  const isNumeric = !isNaN(Number(filterValue.charAt(0))); // Check first character
+  console.log("Filter value:", filterValue, "Is numeric start:", isNumeric, "Column:", columnId);
+  console.log("Row value:", row.getValue(columnId));
+
+  if (columnId === "orderNumber" && isNumeric) {
+    const orderNumber = row.getValue("orderNumber") as number;
+    return orderNumber.toString().startsWith(filterValue);
+  } else if (columnId === "mainLateral" && !isNumeric) {
+    const mainLateral = row.getValue("mainLateral") as string;
+    return mainLateral.toLowerCase().startsWith(filterValue.toLowerCase());
+  }
+  return true; // No filtering if conditions don’t match
+};
+
 export function OrderTable({ location, data }: OrderTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "startTime", desc: false },
   ]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [filterValue, setFilterValue] = React.useState<string>("");
 
   const table = useReactTable({
     data,
     columns,
-    state: { sorting },
+    state: {
+      sorting,
+      columnFilters,
+    },
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    filterFns: {
+      customFilter, // Register the typed filter function
+    },
   });
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFilterValue(value);
+    const isNumeric = !isNaN(Number(value.charAt(0)));
+    table.setColumnFilters([
+      {
+        id: isNumeric && value ? "orderNumber" : "mainLateral",
+        value,
+      },
+    ]);
+  };
 
   return (
     <div className="rounded-md border border-gray-500/10 shadow-md">
-      <p>{location || "All Districts"}</p>
+      <div className="p-2 inline-flex items-center gap-2">
+        Find:
+        <Input
+          name="filter"
+          className="max-w-48"
+          value={filterValue}
+          onChange={handleFilterChange}
+          placeholder="Enter order # or canal..."
+        />
+      </div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -53,8 +106,8 @@ export function OrderTable({ location, data }: OrderTableProps) {
                     : header.column.columnDef.header}
                   {header.column.getIsSorted()
                     ? header.column.getIsSorted() === "asc"
-                      ? " 🔼"
-                      : " 🔽"
+                      ? " ^"
+                      : " v"
                     : ""}
                 </TableHead>
               ))}

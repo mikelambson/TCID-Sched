@@ -26,10 +26,21 @@ export const columns: ColumnDef<ScheduleRow>[] = [
   {
     accessorKey: "orderNumber",
     header: "Order #",
+    filterFn: (row, columnId, filterValue) => {
+      // Implement your custom filter logic here
+      return String(row.getValue(columnId)).startsWith(String(filterValue));
+    },
   },
   {
     accessorKey: "mainLateral",
-    header: "Canal", // Assuming "mainLateral" represents the canal
+    header: "Lateral - Takeout",
+    filterFn: (row, columnId, filterValue) => {
+      const isNumeric = !isNaN(Number(filterValue.charAt(0)));
+      if (!isNumeric) {
+        return String(row.getValue(columnId)).toLowerCase().startsWith(String(filterValue).toLowerCase());
+      }
+      return true; // Don’t filter mainLateral if input is numeric
+    },
   },
   {
     accessorKey: "district",
