@@ -85,6 +85,7 @@ export default function ManageUsers() {
         name: "",
         email: "",
         password: "",
+        confirmPassword: "",
         isAdmin: false,
         },
     });
