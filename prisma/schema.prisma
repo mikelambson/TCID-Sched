@@ -25,13 +25,14 @@ model Schedule {
   id          String   @id @default(cuid())
   startTime   DateTime
   mainLateral String
-  cfs         DateTime
+  cfs         Float
   orderNumber Int
-  status      String
+  status      String?
   district    String
   lineHead    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt  
+  @@unique([orderNumber, startTime])
 }
 
 model Wmessage {

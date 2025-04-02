@@ -1,43 +1,52 @@
-"use client"
-import { OrderTable } from "@/features/schedule/ordertable";
-import { getSchedule } from "@/services/getschedule";
-
-interface ScheduleProps {
-    location: string;
-}
+"use client";
 
 import { useEffect, useState } from "react";
-import { ColumnDef } from "@tanstack/react-table"; // Adjust the import path if necessary
+import { OrderTable } from "@/features/schedule/ordertable";
+import { getSchedules } from "@/services/schedule";
+import { ScheduleRow } from "@/lib/types";
+
+interface ScheduleProps {
+  location: string;
+}
 
 const Schedule = (props: ScheduleProps) => {
-    const [schedule, setSchedule] = useState<{ columns: ColumnDef<{ orderId: number; customerName: string; orderDate: string; total: number; }, unknown>[]; data: { orderId: number; customerName: string; orderDate: string; total: number; }[] } | null>(null);
+  const [scheduleData, setScheduleData] = useState<ScheduleRow[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchSchedule = async () => {
-            const data = await getSchedule();
-            setSchedule({
-                ...data,
-                columns: data.columns.map((col: { Header: string; accessor: string }) => ({
-                    header: col.Header,
-                    accessorKey: col.accessor,
-                })),
-            });
-        };
-        fetchSchedule();
-    }, []);
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        setLoading(true);
+        const data = await getSchedules(props.location.toUpperCase());
+        setScheduleData(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSchedule();
+  }, [props.location]);
 
-    if (!schedule) {
-        return <div>Loading...</div>;
-    }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-    return ( 
-        <div className="my-4 grid gap-4 p-2">
-            <h1>{props.location}</h1>
-            <OrderTable 
-                location={props.location}
-            />
-        </div>
-     );
-}
- 
+  if (error) {
+    return <div className="text-red-500">Error: {error}</div>;
+  }
+
+  if (!scheduleData) {
+    return <div>No data available</div>;
+  }
+
+  return (
+    <div className="my-4 grid gap-4 p-2">
+      <h1>{props.location}</h1>
+      <OrderTable location={props.location} data={scheduleData} />
+    </div>
+  );
+};
+
 export default Schedule;
