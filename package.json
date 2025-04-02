@@ -14,7 +14,7 @@
     "reset": "ts-node ./prisma/seed.ts --reset",
     "list": "ts-node ./prisma/seed.ts --list",
     "delete": "ts-node ./prisma/seed.ts --reset",
-    "generate:staging": "prisma generate --schema=./prisma/schema.prisma --env-file=.env.staging"
+    "db:deploy": "prisma db push --schema=./prisma/schema.prisma --env-file=.env.local"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.0",
