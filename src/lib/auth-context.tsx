@@ -5,12 +5,11 @@ import { createContext, useContext, useEffect, useState, useCallback } from "rea
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-
 type UserType = { 
   id: string; 
   name?: string | null; 
-  email: string 
-  isAdmin: boolean
+  email: string;
+  isAdmin: boolean;
 };
 
 type AuthContextType = {
@@ -32,19 +31,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
-  const pathSyle = pathname.includes("/admin") ? "text-white/50" : "text-gray-500";
-  const namePathSyle = pathname.includes("/admin") ? "text-yellow-500" : "text-black";
+  const pathStyle = pathname.includes("/admin") ? "text-white/50" : "text-gray-500";
+  const namePathStyle = pathname.includes("/admin") ? "text-yellow-500" : "text-black";
 
   const recheckSession = useCallback(async () => {
     try {
       const res = await fetch("/api/auth/session", {
         credentials: "include",
+        cache: 'no-store', // Prevent caching of session data
       });
 
       if (res.ok) {
         const data = await res.json();
-        setUser(data.user);
-        setLoggedIn(true);
+        if (data.user) {
+          setUser(data.user);
+          setLoggedIn(true);
+        } else {
+          setUser(null);
+          setLoggedIn(false);
+        }
       } else {
         setUser(null);
         setLoggedIn(false);
@@ -53,28 +58,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.error("Session check failed:", err);
       setUser(null);
       setLoggedIn(false);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    recheckSession().finally(() => setLoading(false));
+    recheckSession();
   }, [recheckSession]);
 
   if (loading) {
     return <div className="text-center mt-10 text-yellow-500">Checking session...</div>;
   }
 
-  
-
   return (
     <AuthContext.Provider value={{ isLoggedIn, setLoggedIn, user, recheckSession }}>
       <div className={`fixed top-4 right-4 font-semibold z-50`}>
         {isLoggedIn && user?.email ? (
           <>
-            <span className={`hidden sm:inline text-xs mr-2 ${pathSyle}`}>
+            <span className={`hidden sm:inline text-xs mr-2 ${pathStyle}`}>
               Welcome:
             </span>
-            <Link href="/admin/profile" className={`hover:underline curser-pointer ${namePathSyle}`}>
+            <Link href="/admin/profile" className={`hover:underline cursor-pointer ${namePathStyle}`}>
               {user.name}
             </Link>
           </>
