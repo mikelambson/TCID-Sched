@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const recheckSession = useCallback(async () => {
     try {
       console.log("Starting session recheck...");
-      const res = await fetch("/api/auth/session", { // Local Next.js route
+      const res = await fetch("/api/auth/session", {
         credentials: "include",
         cache: "no-store",
       });
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const data = await res.json();
       console.log("Session check response:", {
         status: res.status,
-        data,
+        data, // Log the full data object
       });
 
       if (res.ok && data.user) {
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(data.user);
         setLoggedIn(true);
       } else {
-        console.log("Session invalid or no user, clearing state");
+        console.log("No valid user in response, clearing state. Response data:", data);
         setUser(null);
         setLoggedIn(false);
       }

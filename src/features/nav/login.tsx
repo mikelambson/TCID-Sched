@@ -17,8 +17,7 @@ import { loginUser } from "@/services/loginService";
 
 
 const Login = () => {
-    const { isLoggedIn, recheckSession } = useAuth(); // ✅ replace setLoggedIn with recheckSession
- // Simulate a logged-in state
+    const { isLoggedIn, recheckSession } = useAuth(); 
     const [open, setOpen] = useState(true);
     const router = useRouter();
     const pathname = usePathname();
@@ -42,34 +41,41 @@ const Login = () => {
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+    
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
         const username = formData.get("username") as string | null;
         const password = formData.get("current-password") as string | null;
-
+    
         if (!username || !password) {
-            alert("Username and password are required.");
-            return;
+          alert("Username and password are required.");
+          return;
         }
-
+    
         try {
-            const response = await loginUser({ username, password });
-            if (!response.success) {
-              alert(response.error || "Login failed");
-              return;
-            }
-      
-            // Wait for session to be fully updated
-            await recheckSession();
-            console.log("Session rechecked, navigating to /admin");
+          const response = await loginUser({ username, password });
+          if (!response.success) {
+            alert(response.error || "Login failed");
+            return;
+          }
+    
+          await recheckSession();
+          const { isLoggedIn: updatedLoggedIn, user } = useAuth(); // Re-fetch state
+          console.log("After recheck - isLoggedIn:", updatedLoggedIn, "user:", user);
+    
+          if (updatedLoggedIn && user) {
+            console.log("Session confirmed valid, navigating to /admin");
             setOpen(false);
             router.push("/admin");
+          } else {
+            console.log("Session still invalid after login, aborting navigation");
+            alert("Login succeeded but session validation failed. Please try again.");
+          }
         } catch (error) {
-            console.error("Login error:", error);
-            alert("An unexpected error occurred during login.");
+          console.error("Login error:", error);
+          alert("An unexpected error occurred during login.");
         }
-    };
+      };
 
     return ( 
         <Dialog open={open} onOpenChange={() => router.back()}>
