@@ -16,7 +16,7 @@ import { useAuth } from "@/lib/auth-context";
 import { loginUser } from "@/services/loginService";
 
 const Login = () => {
-  const { isLoggedIn, user, setUser, setLoggedIn } = useAuth(); // No recheckSession needed here
+  const { isLoggedIn, setUser, setLoggedIn } = useAuth(); 
   const [open, setOpen] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
