@@ -17,12 +17,12 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const validateSession = async () => {
       if (isLoggedIn && user) {
         // If already logged in from auth context, trust it
-        console.log("Using existing auth state - isLoggedIn:", isLoggedIn, "user:", user);
+        // console.log("Using existing auth state - isLoggedIn:", isLoggedIn, "user:", user);
         setValidSession(true);
         setChecking(false);
       } else {
         // Only fetch if no valid state (e.g., page refresh)
-        console.log("No valid auth state, checking session...");
+        // console.log("No valid auth state, checking session...");
         try {
           await recheckSession(); // Use context's recheckSession
           if (isLoggedIn && user) {
