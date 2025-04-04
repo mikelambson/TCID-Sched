@@ -1,43 +1,46 @@
+// app/admin/layout.tsx (assuming this is the file)
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { QueryProvider } from '@/lib//query-provider';
+import { QueryProvider } from '@/lib/query-provider';
 import AdminNav from "@/features/nav/adminNav";
+import { useAuth } from "@/lib/auth-context";
 
 const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isLoggedIn, user, recheckSession } = useAuth();
   const router = useRouter();
   const [checking, setChecking] = useState(true);
   const [validSession, setValidSession] = useState(false);
 
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const res = await fetch("/api/auth/session", {
-          credentials: "include",
-        });
-
-        if (!res.ok) {
-          router.push("/not-found");
-          return;
-        }
-
-        const data = await res.json();
-        if (data?.user?.email) {
-          setValidSession(true);
-        } else {
-          router.push("/not-found");
-        }
-      } catch (err) {
-        console.error("Session check failed", err);
-        router.push("/not-found");
-      } finally {
+    const validateSession = async () => {
+      if (isLoggedIn && user) {
+        // If already logged in from auth context, trust it
+        console.log("Using existing auth state - isLoggedIn:", isLoggedIn, "user:", user);
+        setValidSession(true);
         setChecking(false);
+      } else {
+        // Only fetch if no valid state (e.g., page refresh)
+        console.log("No valid auth state, checking session...");
+        try {
+          await recheckSession(); // Use context's recheckSession
+          if (isLoggedIn && user) {
+            setValidSession(true);
+          } else {
+            router.push("/not-found");
+          }
+        } catch (err) {
+          console.error("Session check failed", err);
+          router.push("/not-found");
+        } finally {
+          setChecking(false);
+        }
       }
     };
 
-    checkSession();
-  }, [router]);
+    validateSession();
+  }, [isLoggedIn, user, recheckSession, router]);
 
   if (checking) {
     return (
