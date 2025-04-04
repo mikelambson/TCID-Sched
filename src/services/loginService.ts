@@ -6,18 +6,15 @@ type LoginCredentials = {
 
 export const loginUser = async ({ username, password }: LoginCredentials) => {
   try {
-    // Use the environment variable for the API base URL
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE || "/api";
-    const url = `${apiBase}/auth/login`;
-    
+    const url = "/api/auth/login"; // Use local Next.js route
     const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Important for cookies
+      credentials: "include",
       body: JSON.stringify({
-        email: username, // Assuming username is email as per your login route
+        email: username,
         password,
       }),
     });
@@ -27,10 +24,9 @@ export const loginUser = async ({ username, password }: LoginCredentials) => {
       data = await res.json();
     } catch (jsonError) {
       console.error("Failed to parse login response JSON:", jsonError);
-      data = {}; // Fallback to empty object if JSON parsing fails
+      data = {};
     }
 
-    // Log the raw response for debugging
     console.log("Login API response:", {
       url,
       status: res.status,
