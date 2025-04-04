@@ -17,7 +17,7 @@ export async function POST() {
       { status: 200 }
     );
     response.headers.set('Set-Cookie', cookie);
-    console.log("Logout - Cookie cleared:", cookie);
+    // console.log("Logout - Cookie cleared:", cookie);
     return response;
   } catch (error) {
     console.error("Logout error:", error);

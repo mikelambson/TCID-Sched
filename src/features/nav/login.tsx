@@ -51,7 +51,7 @@ const Login = () => {
 
     try {
       const response = await loginUser({ username, password });
-      console.log("Login response:", response);
+      // console.log("Login response:", response);
 
       if (!response.success || !response.user) {
         alert(response.error || "Login failed");
@@ -66,10 +66,10 @@ const Login = () => {
         isAdmin: response.user.isAdmin || false, // Add isAdmin if missing
       });
       setLoggedIn(true);
-      console.log("State set directly - isLoggedIn:", true, "user:", response.user);
+      // console.log("State set directly - isLoggedIn:", true, "user:", response.user);
 
       // Navigate immediately
-      console.log("Login successful, navigating to /admin");
+      // console.log("Login successful, navigating to /admin");
       setOpen(false);
       router.push("/admin");
     } catch (error) {

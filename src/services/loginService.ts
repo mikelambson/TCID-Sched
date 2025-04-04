@@ -20,13 +20,13 @@ export const loginUser = async ({ username, password }: LoginCredentials) => {
     });
 
     const data = await res.json();
-    console.log("Login API response:", {
-      url,
-      status: res.status,
-      statusText: res.statusText,
-      data,
-      headers: Object.fromEntries(res.headers.entries()), // Log response headers
-    });
+    // console.log("Login API response:", {
+    //   url,
+    //   status: res.status,
+    //   statusText: res.statusText,
+    //   data,
+    //   headers: Object.fromEntries(res.headers.entries()), // Log response headers
+    // });
 
     if (!res.ok) {
       return {
