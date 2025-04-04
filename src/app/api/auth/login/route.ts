@@ -25,11 +25,11 @@ export async function POST(request: Request) {
     }
 
     const sessionToken = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
-    console.log("Login - Generated session token:", sessionToken);
+    // console.log("Login - Generated session token:", sessionToken);
 
     const cookie = serialize('session', sessionToken, {
       httpOnly: true,
-      secure: false, // Force false for local testing
+      secure: true, 
       sameSite: 'lax',
       maxAge: 60 * 60 * 24,
       path: '/',
