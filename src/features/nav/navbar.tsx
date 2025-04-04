@@ -16,20 +16,37 @@ import { MdLogin, MdOutlineKey } from "react-icons/md";
 import { TbCircleLetterC, TbCircleLetterE, TbCircleLetterT, TbCircleLetterW } from "react-icons/tb";
 import { useAuth } from "@/lib/auth-context";
 import { usePathname } from "next/navigation";
-    
+import { useRef } from "react";
+
+
+
+ // Shift focus to drawer when it opens
+
   
-  const Navbar = () => {
+const Navbar = () => {
     const pathname = usePathname();
     const { isLoggedIn } = useAuth();
     const isLogin = isLoggedIn ? "Logout" : "Login";
     const iconColor = pathname.startsWith("/admin") ? "text-white" : "text-foreground";
+
+    const drawerRef = useRef<HTMLDivElement>(null);
+
+    const handleDrawerOpen = () => {
+        if (drawerRef.current) {
+          drawerRef.current.focus(); // Move focus to drawer content
+        }
+     };
+
     return ( 
         <Drawer direction="left">
-            <DrawerTrigger className={`fixed top-1 left-1 p-2 z-10 border-b border-r border-black/40 bg-slate-600/30 hover:bg-slate-400/50 hover:border-yellow-600/30 cursor-pointer rounded-md drop-shadow-lg ${iconColor}`}>
+            <DrawerTrigger 
+                className={`fixed top-1 left-1 p-2 z-10 border-b border-r border-black/40 bg-slate-600/30 hover:bg-slate-400/50 hover:border-yellow-600/30 cursor-pointer rounded-md drop-shadow-lg ${iconColor}`}
+                onClick={handleDrawerOpen}
+            >
                     <GiHamburgerMenu size={30} />
                     <span className="sr-only">Open navigation</span>
             </DrawerTrigger>
-            <DrawerContent>
+            <DrawerContent ref={drawerRef} tabIndex={-1}>
                 <DrawerHeader>
                     <DrawerTitle className="sr-only">Main Menu</DrawerTitle>
                     <DrawerDescription className="sr-only">

@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       maxAge: 60 * 60 * 24,
       path: '/',
     });
-    console.log("Login - Cookie set:", cookie);
+    // console.log("Login - Cookie set:", cookie);
 
     const response = NextResponse.json(
       {
