@@ -31,7 +31,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ user: null }, { status: 200 });
       }
     } catch (error) {
-      return NextResponse.json({ user: null }, { status: 200 });
+      return NextResponse.json({ user: null, msg: error }, { status: 200 });
     }
 
     const [userId, timestamp] = decoded.split(':');
