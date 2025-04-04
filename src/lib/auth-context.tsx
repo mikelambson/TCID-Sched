@@ -36,23 +36,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const recheckSession = useCallback(async () => {
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_BASE || "/api";
-      const url = `${apiBase}/auth/session`;
-      const res = await fetch(url, {
+      console.log("Starting session recheck...");
+      const res = await fetch("/api/auth/session", { // Local Next.js route
         credentials: "include",
-        cache: 'no-store', // Prevent caching of session data
+        cache: "no-store",
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data.user) {
-          setUser(data.user);
-          setLoggedIn(true);
-        } else {
-          setUser(null);
-          setLoggedIn(false);
-        }
+      const data = await res.json();
+      console.log("Session check response:", {
+        status: res.status,
+        data,
+      });
+
+      if (res.ok && data.user) {
+        console.log("Session valid, setting user:", data.user);
+        setUser(data.user);
+        setLoggedIn(true);
       } else {
+        console.log("Session invalid or no user, clearing state");
         setUser(null);
         setLoggedIn(false);
       }
@@ -66,6 +67,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
+    console.log("Initial checking session on mount...");
     recheckSession();
   }, [recheckSession]);
 
