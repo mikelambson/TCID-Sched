@@ -17,7 +17,7 @@ import { loginUser } from "@/services/loginService";
 
 
 const Login = () => {
-    const { isLoggedIn, recheckSession } = useAuth(); 
+    const { isLoggedIn, recheckSession, user } = useAuth(); 
     const [open, setOpen] = useState(true);
     const router = useRouter();
     const pathname = usePathname();
@@ -60,22 +60,32 @@ const Login = () => {
           }
     
           await recheckSession();
-          const { isLoggedIn: updatedLoggedIn, user } = useAuth(); // Re-fetch state
-          console.log("After recheck - isLoggedIn:", updatedLoggedIn, "user:", user);
+          console.log("After recheck - isLoggedIn:", isLoggedIn, "user:", user);
     
-          if (updatedLoggedIn && user) {
-            console.log("Session confirmed valid, navigating to /admin");
+          
+      // Use the existing isLoggedIn and user from the top-level useAuth
+      if (isLoggedIn && user) {
+        console.log("Session confirmed valid, navigating to /admin");
+        setOpen(false);
+        router.push("/admin");
+      } else {
+        // Wait for the next render to ensure state is updated
+        setTimeout(() => {
+          if (isLoggedIn && user) {
+            console.log("Session confirmed valid after delay, navigating to /admin");
             setOpen(false);
             router.push("/admin");
           } else {
             console.log("Session still invalid after login, aborting navigation");
             alert("Login succeeded but session validation failed. Please try again.");
           }
-        } catch (error) {
-          console.error("Login error:", error);
-          alert("An unexpected error occurred during login.");
-        }
-      };
+        }, 100); // Small delay to allow state to propagate
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("An unexpected error occurred during login.");
+    }
+  };
 
     return ( 
         <Dialog open={open} onOpenChange={() => router.back()}>
