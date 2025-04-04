@@ -19,11 +19,13 @@ export default function LogoutPage() {
         if (!response.ok) {
           throw new Error('Logout request failed');
         }
-
-        // Clear client state and force session recheck
+        <div className="text-center mt-10 text-yellow-500 ">
+          Logging out...
+        </div>;
+        router.push('/');
         setLoggedIn(false);
         await recheckSession(); // This will update the user state
-
+         // Use replace to avoid going back to logout page
         // Redirect to login or home
         router.push('/'); 
       } catch (error) {
