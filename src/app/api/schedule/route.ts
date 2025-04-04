@@ -1,4 +1,3 @@
-// app/api/schedule/route.ts
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { ScheduleRow } from '@/lib/types'; // Adjust path
@@ -53,12 +52,10 @@ export async function POST(request: Request) {
       .map(async (row) => {
         return prisma.schedule.upsert({
           where: {
-            orderNumber_startTime: {
-              orderNumber: row.orderNumber,
-              startTime: row.startTime,
-            },
+            orderNumber: row.orderNumber, // Now using only orderNumber as the unique identifier
           },
           update: {
+            startTime: row.startTime, // Allow startTime to be updated
             mainLateral: row.mainLateral,
             cfs: row.cfs,
             status: row.status,
@@ -98,49 +95,50 @@ export async function POST(request: Request) {
   }
 }
 
+// GET route remains unchanged
 export async function GET(request: Request) {
-    try {
-      // Extract district filter from query params
-      const { searchParams } = new URL(request.url);
-      const districtFilter = searchParams.get('district'); // e.g., "WEST" (uppercase from frontend)
-  
-      // Build Prisma query
-      const whereClause: ScheduleWhereClause = {};
-      if (districtFilter) {
-        whereClause.district = {
-          contains: districtFilter, // Case-sensitive match, expecting uppercase
-        };
-      }
-  
-      // Fetch schedules, sorted by startTime ascending
-      const schedules = await prisma.schedule.findMany({
-        where: whereClause,
-        orderBy: {
-          startTime: 'asc',
-        },
-        select: {
-          id: true,
-          startTime: true,
-          mainLateral: true,
-          cfs: true,
-          orderNumber: true,
-          status: true,
-          district: true,
-          lineHead: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
-  
-      return NextResponse.json({
-        schedules,
-        count: schedules.length,
-      });
-    } catch (error) {
-      console.error('Error fetching schedules:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch schedules', details: error instanceof Error ? error.message : 'Unknown error' },
-        { status: 500 }
-      );
+  try {
+    // Extract district filter from query params
+    const { searchParams } = new URL(request.url);
+    const districtFilter = searchParams.get('district'); // e.g., "WEST" (uppercase from frontend)
+
+    // Build Prisma query
+    const whereClause: ScheduleWhereClause = {};
+    if (districtFilter) {
+      whereClause.district = {
+        contains: districtFilter, // Case-sensitive match, expecting uppercase
+      };
     }
+
+    // Fetch schedules, sorted by startTime ascending
+    const schedules = await prisma.schedule.findMany({
+      where: whereClause,
+      orderBy: {
+        startTime: 'asc',
+      },
+      select: {
+        id: true,
+        startTime: true,
+        mainLateral: true,
+        cfs: true,
+        orderNumber: true,
+        status: true,
+        district: true,
+        lineHead: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return NextResponse.json({
+      schedules,
+      count: schedules.length,
+    });
+  } catch (error) {
+    console.error('Error fetching schedules:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch schedules', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
   }
+}
