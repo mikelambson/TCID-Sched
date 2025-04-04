@@ -38,6 +38,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       console.log("Starting session recheck...");
       const res = await fetch("/api/auth/session", {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Credentials': 'true',
+          'Access-Control-Allow-Origin': 'http://66.214.209.24',
+      },
         credentials: "include",
         cache: "no-store",
       });
