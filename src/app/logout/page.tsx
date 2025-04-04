@@ -25,7 +25,7 @@ export default function LogoutPage() {
         await recheckSession(); // This will update the user state
 
         // Redirect to login or home
-        router.push('/login'); // Changed to /login for clarity
+        router.push('/'); 
       } catch (error) {
         console.error("Logout failed:", error);
       }
