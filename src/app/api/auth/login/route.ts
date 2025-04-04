@@ -29,22 +29,22 @@ export async function POST(request: Request) {
 
     const cookie = serialize('session', sessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax', // Changed to 'lax' for better cross-origin compatibility
-      maxAge: 60 * 60 * 24,
+      secure: process.env.NODE_ENV === 'production', // Only Secure in prod
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24, // 1 day
       path: '/',
-      // domain: undefined // Leave unset to default to the current domain
     });
+    console.log("Login - Cookie set:", cookie);
 
     const response = NextResponse.json(
       {
         message: 'Login successful',
-        user: { id: user.id, name: user.name, email: user.email },
+        user: { id: user.id, name: user.name, email: user.email, isAdmin: user.isAdmin },
       },
       { status: 200 }
     );
     response.headers.set('Set-Cookie', cookie);
-    console.log("Login - Cookie set:", cookie);
+    console.log("Login - Response headers:", response.headers); // Log headers
 
     return response;
   } catch (error) {
