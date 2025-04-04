@@ -13,7 +13,6 @@ export async function POST(request: Request) {
   try {
     const { email, password } = (await request.json()) as LoginRequestBody;
 
-    // Find the user by email
     const user = await prisma.user.findUnique({
       where: { email },
     });
@@ -25,15 +24,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create a session token (simple base64 for now)
     const sessionToken = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
+    console.log("Login - Generated session token:", sessionToken);
 
-    // Set session cookie
     const cookie = serialize('session', sessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false, // Force false for local testing
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24, // 1 day
+      maxAge: 60 * 60 * 24,
       path: '/',
     });
     console.log("Login - Cookie set:", cookie);
@@ -41,15 +39,17 @@ export async function POST(request: Request) {
     const response = NextResponse.json(
       {
         message: 'Login successful',
-        user: { id: user.id, name: user.name, email: user.email },
+        user: { id: user.id, name: user.name, email: user.email, isAdmin: user.isAdmin },
       },
       { status: 200 }
     );
     response.headers.set('Set-Cookie', cookie);
-    console.log("Login - Response headers:", response.headers); // Log headers
+    response.headers.set('X-Test-Header', 'test-value'); // Test header to confirm delivery
+    console.log("Login - Response headers:", Object.fromEntries(response.headers.entries()));
+
     return response;
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
     return NextResponse.json(
       { error: 'Failed to log in' },
       { status: 500 }

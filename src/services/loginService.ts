@@ -11,7 +11,6 @@ export const loginUser = async ({ username, password }: LoginCredentials) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'Access-Control-Allow-Credentials': 'true',
       },
       credentials: "include",
       body: JSON.stringify({
@@ -26,6 +25,7 @@ export const loginUser = async ({ username, password }: LoginCredentials) => {
       status: res.status,
       statusText: res.statusText,
       data,
+      headers: Object.fromEntries(res.headers.entries()), // Log response headers
     });
 
     if (!res.ok) {
@@ -49,7 +49,7 @@ export const loginUser = async ({ username, password }: LoginCredentials) => {
         id: data.user.id,
         name: data.user.name,
         email: data.user.email,
-        isAdmin: data.user.isAdmin || false, // Ensure isAdmin is included
+        isAdmin: data.user.isAdmin || false,
       },
     };
   } catch (error) {

@@ -6,7 +6,7 @@ export async function POST() {
   try {
     const cookie = serialize('session', '', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,
       sameSite: 'lax', // Match login route
       maxAge: 0, // Expire immediately
       path: '/',
