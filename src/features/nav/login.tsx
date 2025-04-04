@@ -24,21 +24,18 @@ const Login = () => {
     const pathname = usePathname();
 
     useEffect(() => {
-        const login = async () => {
-            
+        const checkLoginState = async () => {
             if (pathname === "/login" && isLoggedIn === false) {
-                setOpen(true);  
-                return;
+              setOpen(true);
+            } else if (pathname === "/login" && isLoggedIn === true) {
+              setOpen(false);
+              router.push("/admin");
+            } else {
+              setOpen(true);
             }
-            else if (pathname === "/login" && isLoggedIn === true) {
-                router.push("/admin");
-                setOpen(false);
-                return;
-            } else { setOpen(true);}
-            return   
         };
-
-        login();    
+      
+        checkLoginState();   
     }, [isLoggedIn]); // eslint-disable-line react-hooks/exhaustive-deps
 
     
@@ -56,16 +53,23 @@ const Login = () => {
             return;
         }
 
-        const response = await loginUser({ username, password });
-
-        if (response.success) {
+        try {
+            const response = await loginUser({ username, password });
+            if (!response.success) {
+              alert(response.error || "Login failed");
+              return;
+            }
+      
+            // Wait for session to be fully updated
             await recheckSession();
+            console.log("Session rechecked, navigating to /admin");
             setOpen(false);
             router.push("/admin");
-        } else {
-            alert(response.error || "Login failed");
+        } catch (error) {
+            console.error("Login error:", error);
+            alert("An unexpected error occurred during login.");
         }
-      };
+    };
 
     return ( 
         <Dialog open={open} onOpenChange={() => router.back()}>

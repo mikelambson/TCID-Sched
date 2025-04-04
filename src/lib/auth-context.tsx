@@ -36,7 +36,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const recheckSession = useCallback(async () => {
     try {
-      const res = await fetch("/api/auth/session", {
+      const apiBase = process.env.NEXT_PUBLIC_API_BASE || "/api";
+      const url = `${apiBase}/auth/session`;
+      const res = await fetch(url, {
         credentials: "include",
         cache: 'no-store', // Prevent caching of session data
       });
