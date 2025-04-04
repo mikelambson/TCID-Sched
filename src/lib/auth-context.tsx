@@ -16,6 +16,7 @@ type AuthContextType = {
   isLoggedIn: boolean;
   setLoggedIn: (value: boolean) => void;
   user: UserType | null;
+  setUser: (user: UserType | null) => void;
   recheckSession: () => Promise<void>;
 };
 
@@ -23,6 +24,7 @@ const AuthContext = createContext<AuthContextType>({
   isLoggedIn: false,
   setLoggedIn: () => {},
   user: null,
+  setUser: () => {},
   recheckSession: async () => {},
 });
 
@@ -74,7 +76,7 @@ const recheckSession = useCallback(async () => {
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setLoggedIn, user, recheckSession }}>
+    <AuthContext.Provider value={{ isLoggedIn, setLoggedIn, user, setUser,recheckSession }}>
       <div className={`fixed top-4 right-4 font-semibold z-50`}>
         {isLoggedIn && user?.email ? (
           <>

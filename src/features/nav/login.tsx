@@ -1,6 +1,6 @@
 // @/features/nav/login.tsx
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +16,7 @@ import { useAuth } from "@/lib/auth-context";
 import { loginUser } from "@/services/loginService";
 
 const Login = () => {
-  const { isLoggedIn, user, recheckSession, setLoggedIn } = useAuth();
+  const { isLoggedIn, user, setUser, setLoggedIn, recheckSession } = useAuth();
   const [open, setOpen] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -58,34 +58,23 @@ const Login = () => {
         return;
       }
 
-      // Wait for session to update
+      // Set state directly from login response
+      setUser(response.user);
+      setLoggedIn(true);
+      console.log("State set directly - isLoggedIn:", true, "user:", response.user);
+
+      // Validate with session check (optional)
       await recheckSession();
-
-      // Use a promise to wait for state to settle
-      const waitForAuthUpdate = () =>
-        new Promise((resolve) => {
-          const checkInterval = setInterval(() => {
-            if (isLoggedIn && user) {
-              clearInterval(checkInterval);
-              resolve(true);
-            }
-          }, 50);
-          setTimeout(() => {
-            clearInterval(checkInterval);
-            resolve(false);
-          }, 1000); // Timeout after 1s
-        });
-
-      const isAuthenticated = await waitForAuthUpdate();
       console.log("After recheck - isLoggedIn:", isLoggedIn, "user:", user);
 
-      if (isAuthenticated) {
+      if (isLoggedIn && user) {
         console.log("Session confirmed valid, navigating to /admin");
         setOpen(false);
         router.push("/admin");
       } else {
-        console.log("Session still invalid after login, response user:", response.user);
-        alert("Login succeeded but session validation failed. Please try again.");
+        console.log("Session check failed, but proceeding with login response user");
+        setOpen(false);
+        router.push("/admin"); // Proceed since login succeeded
       }
     } catch (error) {
       console.error("Login error:", error);

@@ -52,7 +52,6 @@ export async function GET(request: Request) {
       return NextResponse.json({ user: null }, { status: 200 });
     }
 
-    // Optional: Validate timestamp (e.g., 24-hour expiration)
     const tokenAge = (Date.now() - parseInt(timestamp)) / 1000;
     if (tokenAge > 60 * 60 * 24) {
       console.log("Token expired, age (seconds):", tokenAge);
