@@ -16,7 +16,7 @@ import { useAuth } from "@/lib/auth-context";
 import { loginUser } from "@/services/loginService";
 
 const Login = () => {
-  const { isLoggedIn, user, setUser, setLoggedIn, recheckSession } = useAuth();
+  const { isLoggedIn, user, setUser, setLoggedIn } = useAuth(); // No recheckSession needed here
   const [open, setOpen] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -59,23 +59,19 @@ const Login = () => {
       }
 
       // Set state directly from login response
-      setUser(response.user);
+      setUser({
+        id: response.user.id,
+        name: response.user.name,
+        email: response.user.email,
+        isAdmin: response.user.isAdmin || false, // Add isAdmin if missing
+      });
       setLoggedIn(true);
       console.log("State set directly - isLoggedIn:", true, "user:", response.user);
 
-      // Validate with session check (optional)
-      await recheckSession();
-      console.log("After recheck - isLoggedIn:", isLoggedIn, "user:", user);
-
-      if (isLoggedIn && user) {
-        console.log("Session confirmed valid, navigating to /admin");
-        setOpen(false);
-        router.push("/admin");
-      } else {
-        console.log("Session check failed, but proceeding with login response user");
-        setOpen(false);
-        router.push("/admin"); // Proceed since login succeeded
-      }
+      // Navigate immediately
+      console.log("Login successful, navigating to /admin");
+      setOpen(false);
+      router.push("/admin");
     } catch (error) {
       console.error("Login error:", error);
       alert("An unexpected error occurred during login.");

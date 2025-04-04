@@ -6,7 +6,7 @@ type LoginCredentials = {
 
 export const loginUser = async ({ username, password }: LoginCredentials) => {
   try {
-    const url = "/api/auth/login"; // Use local Next.js route
+    const url = "/api/auth/login";
     const res = await fetch(url, {
       method: "POST",
       headers: {
@@ -19,14 +19,7 @@ export const loginUser = async ({ username, password }: LoginCredentials) => {
       }),
     });
 
-    let data;
-    try {
-      data = await res.json();
-    } catch (jsonError) {
-      console.error("Failed to parse login response JSON:", jsonError);
-      data = {};
-    }
-
+    const data = await res.json();
     console.log("Login API response:", {
       url,
       status: res.status,
@@ -51,7 +44,12 @@ export const loginUser = async ({ username, password }: LoginCredentials) => {
 
     return {
       success: true,
-      user: data.user,
+      user: {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        isAdmin: data.user.isAdmin || false, // Ensure isAdmin is included
+      },
     };
   } catch (error) {
     console.error("Unexpected error in loginUser:", error);
