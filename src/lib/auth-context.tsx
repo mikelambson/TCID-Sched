@@ -39,25 +39,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const recheckSession = useCallback(async () => {
     try {
-      console.log("Starting session recheck...");
+      // console.log("Starting session recheck...");
       const res = await fetch("/api/auth/session", {
         credentials: "include",
         cache: "no-store",
       });
 
       const data = await res.json();
-      console.log("Session check response:", { status: res.status, data });
+      // console.log("Session check response:", { status: res.status, data });
 
       if (res.ok && data.user) {
-        console.log("Session valid, setting user:", data.user);
+        // console.log("Session valid, setting user:", data.user);
         setUser(data.user);
         setLoggedIn(true);
       } else if (!isLoggedIn || !user) { // Only clear if state is invalid
-        console.log("No valid user in response, clearing state. Response data:", data);
+        // console.log("No valid user in response, clearing state. Response data:", data);
         setUser(null);
         setLoggedIn(false);
       } else {
-        console.log("Preserving existing valid state - isLoggedIn:", isLoggedIn, "user:", user);
+        return; // No need to clear state if it's already valid
       }
     } catch (err) {
       console.error("Session check failed:", err);
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!hasMounted.current) {
-      console.log("Initial checking session on mount...");
+      // console.log("Initial checking session on mount...");
       recheckSession();
       hasMounted.current = true;
     }
