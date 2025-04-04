@@ -17,17 +17,20 @@ import { FaAngleDoubleDown, FaAngleDoubleUp } from "react-icons/fa";
 import { columns } from "./columns";
 import { ScheduleRow } from "@/lib/types";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Assuming you have a Select component
+
 
 interface OrderTableProps {
   location?: string;
   data: ScheduleRow[];
 }
 
+// Define the custom filter function with proper typing
 const customFilter: FilterFn<ScheduleRow> = (row, columnId, filterValue: string) => {
-  if (!filterValue) return true;
+  if (!filterValue) return true; // No filter if empty
 
-  const isNumeric = !isNaN(Number(filterValue.charAt(0)));
+  const isNumeric = !isNaN(Number(filterValue.charAt(0))); // Check first character
   console.log("Filter value:", filterValue, "Is numeric start:", isNumeric, "Column:", columnId);
   console.log("Row value:", row.getValue(columnId));
 
@@ -38,14 +41,16 @@ const customFilter: FilterFn<ScheduleRow> = (row, columnId, filterValue: string)
     const mainLateral = row.getValue("mainLateral") as string;
     return mainLateral.toLowerCase().startsWith(filterValue.toLowerCase());
   }
-  return true;
+  return true; // No filtering if conditions don’t match
 };
 
 export function OrderTable({ location, data }: OrderTableProps) {
-  const [sorting, setSorting] = React.useState<SortingState>([{ id: "startTime", desc: false }]);
+  const [sorting, setSorting] = React.useState<SortingState>([
+    { id: "startTime", desc: false },
+  ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [filterValue, setFilterValue] = React.useState<string>("");
-  const [pageSize, setPageSize] = React.useState(10); // Default page size
+  const [pageSize, setPageSize] = React.useState(25); // Default page size
 
   const table = useReactTable({
     data,
@@ -53,9 +58,11 @@ export function OrderTable({ location, data }: OrderTableProps) {
     state: {
       sorting,
       columnFilters,
+    },
+    initialState: {
       pagination: {
-        pageSize, // Dynamic page size
-        pageIndex: 0, // Reset to first page when size changes
+        pageSize,
+        pageIndex: 0,
       },
     },
     onSortingChange: setSorting,
@@ -65,7 +72,7 @@ export function OrderTable({ location, data }: OrderTableProps) {
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     filterFns: {
-      customFilter,
+      customFilter, // Register the typed filter function
     },
   });
 
@@ -90,7 +97,9 @@ export function OrderTable({ location, data }: OrderTableProps) {
   return (
     <div className="rounded-md border border-gray-500/10 shadow-md">
       <div className="w-full p-2 inline-flex items-center gap-2 flex-nowrap">
-        <p className="font-semibold text-gray-700">Search {location}:</p>
+        <p className="font-semibold text-gray-700">
+            Search {location}:
+        </p>
         <Input
           name="filter"
           className="max-w-48"
@@ -104,21 +113,21 @@ export function OrderTable({ location, data }: OrderTableProps) {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  className="cursor-pointer"
-                >
-                  <div className="flex items-center gap-1">
-                    {header.isPlaceholder
-                      ? null
-                      : typeof header.column.columnDef.header === "function"
-                      ? header.column.columnDef.header(header.getContext())
-                      : header.column.columnDef.header}
-                    {header.column.getIsSorted() === "asc" && <FaAngleDoubleUp />}
-                    {header.column.getIsSorted() === "desc" && <FaAngleDoubleDown />}
-                  </div>
-                </TableHead>
+                 <TableHead
+                 key={header.id}
+                 onClick={header.column.getToggleSortingHandler()}
+                 className="cursor-pointer"
+               >
+                 <div className="flex items-center gap-1">
+                   {header.isPlaceholder
+                     ? null
+                     : typeof header.column.columnDef.header === "function"
+                     ? header.column.columnDef.header(header.getContext())
+                     : header.column.columnDef.header}
+                   {header.column.getIsSorted() === "asc" && <FaAngleDoubleUp />}
+                   {header.column.getIsSorted() === "desc" && <FaAngleDoubleDown />}
+                 </div>
+               </TableHead>
               ))}
             </TableRow>
           ))}
@@ -145,22 +154,24 @@ export function OrderTable({ location, data }: OrderTableProps) {
           )}
         </TableBody>
       </Table>
-      <div className="flex justify-between p-2 text-sm items-center">
-        <button
+
+      <div className="flex justify-between p-2 text-sm">
+        <Button
+          size={"sm"}
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
           className="disabled:opacity-50"
         >
           Previous
-        </button>
+        </Button>
         <span>
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </span>
         <div className="flex items-center gap-2">
           <span>Rows per page:</span>
-          <Select onValueChange={handlePageSizeChange} defaultValue="10">
+          <Select onValueChange={handlePageSizeChange} defaultValue="25">
             <SelectTrigger className="w-20">
-              <SelectValue placeholder="10" />
+              <SelectValue placeholder="25" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="10">10</SelectItem>
@@ -171,13 +182,14 @@ export function OrderTable({ location, data }: OrderTableProps) {
             </SelectContent>
           </Select>
         </div>
-        <button
+        <Button
+          size={"sm"}
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
           className="disabled:opacity-50"
         >
           Next
-        </button>
+        </Button>
       </div>
     </div>
   );
