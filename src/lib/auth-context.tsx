@@ -1,7 +1,7 @@
 // lib/auth-context.tsx
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const pathStyle = pathname.includes("/admin") ? "text-white/50" : "text-gray-500";
   const namePathStyle = pathname.includes("/admin") ? "text-yellow-500" : "text-black";
+  const hasMounted = useRef(false);
 
   const recheckSession = useCallback(async () => {
     try {
@@ -51,23 +52,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log("Session valid, setting user:", data.user);
         setUser(data.user);
         setLoggedIn(true);
-      } else {
+      } else if (!isLoggedIn || !user) { // Only clear if state is invalid
         console.log("No valid user in response, clearing state. Response data:", data);
         setUser(null);
         setLoggedIn(false);
+      } else {
+        console.log("Preserving existing valid state - isLoggedIn:", isLoggedIn, "user:", user);
       }
     } catch (err) {
       console.error("Session check failed:", err);
-      setUser(null);
-      setLoggedIn(false);
+      if (!isLoggedIn || !user) {
+        setUser(null);
+        setLoggedIn(false);
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isLoggedIn, user]); // Add user as dependency
 
   useEffect(() => {
-    console.log("Initial checking session on mount...");
-    recheckSession(); // Only runs on mount for page refresh
+    if (!hasMounted.current) {
+      console.log("Initial checking session on mount...");
+      recheckSession();
+      hasMounted.current = true;
+    }
   }, [recheckSession]);
 
   if (loading) {
