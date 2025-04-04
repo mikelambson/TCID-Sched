@@ -30,7 +30,7 @@ export async function GET(request: Request) {
     try {
       decoded = Buffer.from(sessionToken, 'base64').toString();
       // console.log("Session route - Decoded token:", decoded);
-    } catch (error) {
+    } catch {
       // console.log("Failed to decode token:", error);
       return NextResponse.json({ user: null }, { status: 200 });
     }
