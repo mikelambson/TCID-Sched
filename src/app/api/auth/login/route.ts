@@ -36,6 +36,7 @@ export async function POST(request: Request) {
       maxAge: 60 * 60 * 24, // 1 day
       path: '/',
     });
+    console.log("Login - Cookie set:", cookie);
 
     const response = NextResponse.json(
       {
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
       { status: 200 }
     );
     response.headers.set('Set-Cookie', cookie);
-
+    console.log("Login - Response headers:", response.headers); // Log headers
     return response;
   } catch (error) {
     console.error(error);

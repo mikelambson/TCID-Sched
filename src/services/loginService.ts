@@ -11,6 +11,7 @@ export const loginUser = async ({ username, password }: LoginCredentials) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        'Access-Control-Allow-Credentials': 'true',
       },
       credentials: "include",
       body: JSON.stringify({
