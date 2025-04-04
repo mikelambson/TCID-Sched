@@ -1,6 +1,6 @@
 {
   "name": "onlineschedule",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "bin": {
     "init": "./bin/init.js"
@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start -p 3001",
+    "start": "next start",
     "lint": "next lint",
     "seed": "ts-node ./prisma/seed.ts",
     "reset": "ts-node ./prisma/seed.ts --reset",
