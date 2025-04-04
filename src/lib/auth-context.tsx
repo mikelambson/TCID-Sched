@@ -34,42 +34,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const pathStyle = pathname.includes("/admin") ? "text-white/50" : "text-gray-500";
   const namePathStyle = pathname.includes("/admin") ? "text-yellow-500" : "text-black";
 
-  const recheckSession = useCallback(async () => {
-    try {
-      console.log("Starting session recheck...");
-      const res = await fetch("/api/auth/session", {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Credentials': 'true',
-          'Access-Control-Allow-Origin': 'http://66.214.209.24',
-      },
-        credentials: "include",
-        cache: "no-store",
-      });
+  // lib/auth-context.tsx (snippet)
+const recheckSession = useCallback(async () => {
+  try {
+    console.log("Starting session recheck...");
+    const res = await fetch("/api/auth/session", {
+      credentials: "include",
+      cache: "no-store",
+    });
 
-      const data = await res.json();
-      console.log("Session check response:", {
-        status: res.status,
-        data, // Log the full data object
-      });
+    const data = await res.json();
+    console.log("Session check response:", { status: res.status, data });
 
-      if (res.ok && data.user) {
-        console.log("Session valid, setting user:", data.user);
-        setUser(data.user);
-        setLoggedIn(true);
-      } else {
-        console.log("No valid user in response, clearing state. Response data:", data);
-        setUser(null);
-        setLoggedIn(false);
-      }
-    } catch (err) {
-      console.error("Session check failed:", err);
+    if (res.ok && data.user) {
+      console.log("Session valid, setting user:", data.user);
+      setUser(data.user);
+      setLoggedIn(true);
+    } else {
+      console.log("No valid user in response, clearing state. Response data:", data);
       setUser(null);
       setLoggedIn(false);
-    } finally {
-      setLoading(false);
     }
-  }, []);
+  } catch (err) {
+    console.error("Session check failed:", err);
+    setUser(null);
+    setLoggedIn(false);
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
   useEffect(() => {
     console.log("Initial checking session on mount...");
