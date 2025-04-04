@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     );
     response.headers.set('Set-Cookie', cookie);
     response.headers.set('X-Test-Header', 'test-value'); // Test header to confirm delivery
-    console.log("Login - Response headers:", Object.fromEntries(response.headers.entries()));
+    
 
     return response;
   } catch (error) {
