@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { serialize } from 'cookie';
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
     const cookie = serialize('session', '', {
       httpOnly: true,
