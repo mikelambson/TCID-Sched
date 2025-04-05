@@ -58,7 +58,7 @@ export default function UploadSchedule() {
 
             return {
               startTime: excelDateToJSDate(Number(startRaw)),
-              mainLateral: (row['MAIN LATERAL'] || '').trim(),
+              mainLateral: String(row['MAIN LATERAL'] || '').trim(),
               cfs: Number(row['CFS'] || 0),
               orderNumber: Number(orderRaw),
               status: row['STATUS'] || '',
