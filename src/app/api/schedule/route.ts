@@ -6,6 +6,7 @@ type ScheduleWhereClause = {
   district?: {
     contains: string;
   };
+  status?: string;
 }
 
 // Helper to extract session from cookies
@@ -34,87 +35,110 @@ export async function POST(request: Request) {
   try {
     const data: ScheduleRow[] = await request.json();
 
-    // Validate input
     if (!Array.isArray(data) || data.length === 0) {
       return NextResponse.json({ error: 'Invalid or empty schedule data' }, { status: 400 });
     }
 
-    // Filter out invalid rows and upsert valid ones
-    const upsertPromises = data
-      .filter((row) => {
-        // Ensure required fields are present and valid
-        if (row.orderNumber == null || row.startTime == null) {
-          console.warn('Skipping invalid row:', row);
-          return false;
-        }
-        return true;
+    // Filter and prepare valid rows
+    const validData = data.filter((row) => {
+      if (row.orderNumber == null || row.startTime == null) {
+        console.warn("Skipping invalid row:", row);
+        return false;
+      }
+      return true;
+    });
+
+    const incomingOrderNumbers = validData.map((row) => row.orderNumber);
+
+    // 1. Mark all schedules not in the incoming order numbers as DONE
+    const markDonePromise = prisma.schedule.updateMany({
+      where: {
+        orderNumber: {
+          notIn: incomingOrderNumbers,
+        },
+      },
+      data: {
+        status: "DONE",
+        updatedAt: new Date(),
+      },
+    });
+
+    // 2. Upsert all valid rows
+    const upsertPromises = validData.map((row) =>
+      prisma.schedule.upsert({
+        where: {
+          orderNumber: row.orderNumber,
+        },
+        update: {
+          startTime: row.startTime,
+          mainLateral: row.mainLateral,
+          cfs: row.cfs,
+          status: row.status,
+          district: row.district,
+          lineHead: row.lineHead,
+          updatedAt: new Date(),
+        },
+        create: {
+          startTime: row.startTime,
+          mainLateral: row.mainLateral,
+          cfs: row.cfs,
+          orderNumber: row.orderNumber,
+          status: row.status,
+          district: row.district,
+          lineHead: row.lineHead,
+        },
       })
-      .map(async (row) => {
-        return prisma.schedule.upsert({
-          where: {
-            orderNumber: row.orderNumber, // Now using only orderNumber as the unique identifier
-          },
-          update: {
-            startTime: row.startTime, // Allow startTime to be updated
-            mainLateral: row.mainLateral,
-            cfs: row.cfs,
-            status: row.status,
-            district: row.district,
-            lineHead: row.lineHead,
-            updatedAt: new Date(),
-          },
-          create: {
-            startTime: row.startTime,
-            mainLateral: row.mainLateral,
-            cfs: row.cfs,
-            orderNumber: row.orderNumber,
-            status: row.status,
-            district: row.district,
-            lineHead: row.lineHead,
-          },
-        });
-      });
+    );
 
-    if (upsertPromises.length === 0) {
-      return NextResponse.json({ error: 'No valid rows to process' }, { status: 400 });
-    }
+    // Run the status="DONE" update first
+    const markDoneResult = await markDonePromise;
 
-    // Execute all upserts in parallel
-    const results = await Promise.all(upsertPromises);
+    // Then upsert the incoming records
+    const upsertResults = await Promise.all(upsertPromises);
 
     return NextResponse.json({
-      message: 'Schedule processed successfully',
-      count: results.length,
+      message: "Schedule processed successfully",
+      upserted: upsertResults.length,
+      markedDone: markDoneResult.count,
     });
   } catch (error) {
-    console.error('Error processing schedule:', error);
+    console.error("Error processing schedule:", error);
     return NextResponse.json(
-      { error: 'Failed to process schedule', details: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: "Failed to process schedule",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     );
   }
 }
 
+
 // GET route remains unchanged
 export async function GET(request: Request) {
   try {
-    // Extract district filter from query params
     const { searchParams } = new URL(request.url);
-    const districtFilter = searchParams.get('district'); // e.g., "WEST" (uppercase from frontend)
+    const districtFilter = searchParams.get("district");
+    const statusParam = searchParams.get("status")?.toUpperCase() || "OPEN";
 
-    // Build Prisma query
     const whereClause: ScheduleWhereClause = {};
+
+    // Primary: district filter
     if (districtFilter) {
       whereClause.district = {
-        contains: districtFilter, // Case-sensitive match, expecting uppercase
+        contains: districtFilter,
       };
     }
 
-    // Fetch schedules, sorted by startTime ascending
+    // Secondary: status filter (unless explicitly set to "ALL")
+    if (statusParam !== "ALL") {
+      whereClause.status = statusParam;
+    }
+
     const schedules = await prisma.schedule.findMany({
       where: whereClause,
       orderBy: {
-        startTime: 'asc',
+        startTime: "asc",
       },
       select: {
         id: true,
@@ -135,9 +159,12 @@ export async function GET(request: Request) {
       count: schedules.length,
     });
   } catch (error) {
-    console.error('Error fetching schedules:', error);
+    console.error("Error fetching schedules:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch schedules', details: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: "Failed to fetch schedules",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     );
   }
