@@ -7,6 +7,9 @@ type ScheduleWhereClause = {
     contains: string;
   };
   status?: string;
+  OR?: Array<{
+    status?: string | null;
+  }>;
 }
 
 // Helper to extract session from cookies
@@ -114,12 +117,13 @@ export async function POST(request: Request) {
 }
 
 
-// GET route remains unchanged
+// GET route defaults to status "OPEN", null, or ""
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const districtFilter = searchParams.get("district");
-    const statusParam = searchParams.get("status")?.toUpperCase() || "OPEN";
+    const statusParamRaw = searchParams.get("status");
+    const statusParam = statusParamRaw?.toUpperCase();
 
     const whereClause: ScheduleWhereClause = {};
 
@@ -130,10 +134,19 @@ export async function GET(request: Request) {
       };
     }
 
-    // Secondary: status filter (unless explicitly set to "ALL")
-    if (statusParam !== "ALL") {
+    // Secondary: status filter
+    if (!statusParam || statusParam === "") {
+      // No status specified — default to OPEN, null, or ""
+      whereClause.OR = [
+        { status: "OPEN" },
+        { status: null },
+        { status: "" },
+      ];
+    } else if (statusParam !== "ALL") {
+      // Specific status filter
       whereClause.status = statusParam;
     }
+    // Else: status=all — no filter applied
 
     const schedules = await prisma.schedule.findMany({
       where: whereClause,
@@ -169,3 +182,4 @@ export async function GET(request: Request) {
     );
   }
 }
+
